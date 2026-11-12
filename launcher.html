@@ -61,6 +61,32 @@
         status.textContent = "Unable to load the interactive geometry file.";
       });
     });
+
+
+    
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const button = [...document.querySelectorAll("button")]
+    .find(btn => btn.textContent.trim().toLowerCase() === "fullscreen");
+
+  if (!button) return;
+
+  button.addEventListener("click", async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error("Fullscreen failed:", error);
+    }
+  });
+});
+</script>
+
+
+  
   </script>
 </body>
 </html>
