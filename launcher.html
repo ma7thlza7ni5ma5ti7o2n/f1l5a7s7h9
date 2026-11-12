@@ -1,99 +1,66 @@
-<script>
-function updateLockButton() {
-  const lockButton = document.getElementById("button");
-  const newOrientation = getOppositeOrientation();
-  lockButton.textContent = `Lock to ${newOrientation}`;
-}
-
-function getOppositeOrientation() {
-  return screen
-    .orientation
-    .type
-    .startsWith("portrait") ? "landscape" : "portrait";
-}
-
-async function rotate(lockButton) {
-  if (!document.fullscreenElement) {
-    await document.documentElement.requestFullscreen();
-  }
-  const newOrientation = getOppositeOrientation();
-  await screen.orientation.lock(newOrientation);
-  updateLockButton(lockButton);
-}
-
-screen.orientation.addEventListener("change", updateLockButton);
-
-window.addEventListener("load", updateLockButton);
-</script>
-
-
-
-<style>
-#container2 {
-    
-    place-content: center;
-
-  }
-
-  #container {
-    
-    display: grid;
-    place-content: center;
-
-  }
-
-</style>
-
-<div id="container2">
-    
-Click
-<button id="button" onclick="rotate(this)">
-  Lock to....
-</button>
-  and yellow fullscreen 2X.</div>
-  
-  <div id="container">
-  
-  
-  
-<script src="swfobject.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-			swfobject.registerObject("myFlashContent", "9.0.0");
- 
-</script>.
-
-
-
-<object align="right" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" height="515" id="myFlashContent" width="940">
-				<param name="movie" value="https://ma7thlza7ni5ma5ti7o2n.github.io/f1l5a7s7h9/Vo1lu7m5e_R5ev7ol1ut7ion5.swf" />
-				<param name="play" value="true" />
-				<param name="menu" value="true" />
-				<param name="quality" value="best" />
-				<param name="scale" value="exactfit" />
-				<param name="wmode" value="window" />
-				<param name="allowfullscreen" value="true" />
-				<!--[if !IE]>-->
-				<object align="right" data="https://ma7thlza7ni5ma5ti7o2n.github.io/f1l5a7s7h9/Vo1lu7m5e_R5ev7ol1ut7ion5.swf" height="515" type="application/x-shockwave-flash" width="940">
-					<param name="play" value="true" />
-					<param name="menu" value="true" />
-					<param name="quality" value="best" />
-					<param name="scale" value="exactfit" />
-					<param name="wmode" value="window" />
-					<param name="allowfullscreen" value="true" />
-				<!--<![endif]-->
-
-   </object></object></div>
- 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Geometry</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; min-height: 100vh; background: #f5f7fb;
+           font: 16px/1.5 system-ui, Arial, sans-serif; }
+    main { width: min(100% - 24px, 760px); margin: 40px auto; }
+    .stage { width: 100%; aspect-ratio: 11 / 8; background: #fff;
+             border: 1px solid #ccd5e2; border-radius: 12px;
+             overflow: hidden; box-shadow: 0 8px 24px #15243b15; }
+    .stage ruffle-player { display: block; width: 100%; height: 100%; }
+    .notice { color: #4b5668; font-size: 14px; }
+  </style>
   <script>
-var elem = document.getElementById("container");
-function openFullscreen() {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
-  }
-}
-</script>
+    "use strict";
+    const APPROVED_ORIGINS = Object.freeze([
+      "https://ma7thlza7ni5ma5ti7o2n.github.io",
+      "https://ma7th1za7ni5ma5ti7o2n.github.io"
+    ]);
+
+    // Called synchronously by the SWF with Flash ExternalInterface.call().
+    // It reports the *embedding page's actual origin*, not the SWF URL.
+    // This function MUST exist before the movie starts.
+    window.swfHostOrigin = function () { return window.location.origin; };
+
+    // Access check in HTML as an early user-friendly restriction;
+    // the SWF independently repeats URL and actual page-origin checks.
+    window.swfHostApproved = APPROVED_ORIGINS.includes(window.location.origin);
+  </script>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+</head>
+<body>
+  <main>
+    <h1>Interactive Geometry</h1>
+    <div class="stage" id="stage"></div>
+    <p class="notice" id="status" role="status"></p>
+  </main>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const status = document.getElementById("status");
+      if (!window.swfHostApproved) {
+        status.textContent = "This interactive file is available only on approved school websites.";
+        return;
+      }
+      if (!window.RufflePlayer || !window.RufflePlayer.newest()) {
+        status.textContent = "The Flash emulator failed to load. Please refresh the page.";
+        return;
+      }
+      const player = window.RufflePlayer.newest().createPlayer();
+      document.getElementById("stage").appendChild(player);
+      player.ruffle().load({
+        url: "./geometry_protected.swf",
+        allowScriptAccess: true,
+        autoplay: "on"
+      }).catch(error => {
+        console.error("Error loading protected SWF", error);
+        status.textContent = "Unable to load the interactive geometry file.";
+      });
+    });
+  </script>
+</body>
+</html>
